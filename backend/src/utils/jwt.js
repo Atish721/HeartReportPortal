@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { ENV } from "../config/env.js";
+import ENV from "../config/env.js";
 
 export const signToken = (payload, expiresIn = 3600) => {
   const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64");

@@ -146,3 +146,5 @@ Desktop.ini
 .project
 .settings/
 *.sublime-workspace
+
+/uploads

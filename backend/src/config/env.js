@@ -1,7 +1,23 @@
-export const ENV = {
-  PORT: process.env.PORT || 5000,
-  MONGO_URI: process.env.MONGO_URI || "mongodb://localhost:27017/heartbuddy",
-  JWT_SECRET: process.env.JWT_SECRET || "super-secret-key",
-  ADMIN_EMAIL: process.env.ADMIN_EMAIL || "admin@heartbuddy.com",
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "Admin@123"
-};
+import fs from 'fs';
+import path from 'path';
+
+const envPath = path.resolve(process.cwd(), '.env');
+
+if (!fs.existsSync(envPath)) {
+    throw new Error('.env file missing');
+}
+
+const envFile = fs.readFileSync(envPath, 'utf-8');
+
+const ENV = {};
+
+envFile.split('\n').forEach(line => {
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith('#')) return;
+
+    const [key, ...rest] = trimmed.split('=');
+    ENV[key] = rest.join('=');
+});
+
+export default ENV;

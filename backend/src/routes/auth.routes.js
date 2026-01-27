@@ -2,7 +2,7 @@ import express from "express";
 import crypto from "crypto";
 import Admin from "../models/Admin.js";
 import { signToken } from "../utils/jwt.js";
-import { ENV } from "../config/env.js";
+import ENV from "../config/env.js";
 
 const router = express.Router();
 

@@ -19,6 +19,16 @@ const reportSchema = new mongoose.Schema({
   },
   lifestyle: [String],
   ecgImagePath: String,
+  ecgAnalysis: {
+    rhythm: String,
+    heartRate: Number,
+    prInterval: Number,
+    qrsDuration: Number,
+    qtInterval: Number,
+    axis: String,
+    interpretation: String,
+    abnormalities: [String]
+  },
   createdAt: {
     type: Date,
     default: Date.now
