@@ -5,7 +5,7 @@ export default function corsMiddleware(req, res, next) {
 
     const allowedOrigins = [
         ENV.FRONTEND_ORIGIN,
-        'https://tgi-three.vercel.app', // Your frontend domain
+        'https://heart-seven-ruddy.vercel.app', // Your frontend domain
     ];
 
     const origin = req.headers.origin;

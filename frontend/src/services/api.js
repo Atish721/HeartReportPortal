@@ -1,4 +1,4 @@
-const BASE_URL_API = import.meta.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const BASE_URL_API = import.meta.env.REACT_APP_API_URL || "https://api-heart-bice.vercel.app/api";
 
 export const loginApi = async (email, password) => {
   const res = await fetch(`${BASE_URL_API}/auth/login`, {
