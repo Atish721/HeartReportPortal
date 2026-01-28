@@ -6,7 +6,10 @@ import '../assets/styles/HealthMetrics.css';
 
 const HealthMetrics = () => {
   const navigate = useNavigate();
-  const { setHealthMetrics, setLipidProfile, setLifestyle, patient } = useReport();
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const { setLipidProfile, setLifestyle, patient } = useReport();
 
   const [formData, setFormData] = useState({
     lipidProfile: {
@@ -20,6 +23,41 @@ const HealthMetrics = () => {
       tobacco: false
     }
   });
+
+  const validate = (data) => {
+    const errors = {};
+
+    const ldl = Number(data.lipidProfile.ldlCholesterol);
+    const hdl = Number(data.lipidProfile.hdlCholesterol);
+    const tg = Number(data.lipidProfile.triglycerides);
+
+    if (data.lipidProfile.ldlCholesterol === "") {
+      errors.ldlCholesterol = "LDL is required";
+    } else if (ldl < 0 || ldl > 300) {
+      errors.ldlCholesterol = "LDL must be between 0 and 300 mg/dL";
+    }
+
+    if (data.lipidProfile.hdlCholesterol === "") {
+      errors.hdlCholesterol = "HDL is required";
+    } else if (hdl < 0 || hdl > 150) {
+      errors.hdlCholesterol = "HDL must be between 0 and 150 mg/dL";
+    }
+
+    if (data.lipidProfile.triglycerides === "") {
+      errors.triglycerides = "Triglycerides are required";
+    } else if (tg < 0 || tg > 500) {
+      errors.triglycerides = "Triglycerides must be between 0 and 500 mg/dL";
+    }
+
+    return errors;
+  };
+
+  const validateField = (field) => {
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
+
 
   useEffect(() => {
     if (!patient) {
@@ -51,12 +89,16 @@ const HealthMetrics = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setHealthMetrics({
-      bp: "N/A", // or remove BP from this page
-      spo2: null,
-      sugar: null,
-      cholesterol: null
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
+
+    setTouched({
+      ldlCholesterol: true,
+      hdlCholesterol: true,
+      triglycerides: true
     });
+
+    if (Object.keys(validationErrors).length > 0) return;
 
     setLipidProfile({
       ldl: Number(formData.lipidProfile.ldlCholesterol),
@@ -71,6 +113,7 @@ const HealthMetrics = () => {
 
     navigate("/ecg");
   };
+
 
 
   const handleBack = () => {
@@ -100,12 +143,16 @@ const HealthMetrics = () => {
                 </div>
                 <input
                   type="number"
-                  className="metric-input"
+                  className={`metric-input form-input ${errors.ldlCholesterol ? "error" : ""}`}
                   placeholder="Enter value"
                   value={formData.lipidProfile.ldlCholesterol}
                   onChange={(e) => handleLipidChange("ldlCholesterol", e.target.value)}
+                  onBlur={() => validateField("ldlCholesterol")}
                   min="0"
                 />
+                {touched.ldlCholesterol && errors.ldlCholesterol && (
+                  <div className="field-error">{errors.ldlCholesterol}</div>
+                )}
                 <div className="metric-note optimal">
                   <span className="metric-status">Optimal:</span>
                   <span className="metric-value">&lt;100 mg/dL</span>
@@ -119,12 +166,16 @@ const HealthMetrics = () => {
                 </div>
                 <input
                   type="number"
-                  className="metric-input"
+                  className={`metric-input form-input ${errors.hdlCholesterol ? "error" : ""}`}
                   placeholder="Enter value"
                   value={formData.lipidProfile.hdlCholesterol}
                   onChange={(e) => handleLipidChange("hdlCholesterol", e.target.value)}
+                  onBlur={() => validateField("hdlCholesterol")}
                   min="0"
                 />
+                {touched.hdlCholesterol && errors.hdlCholesterol && (
+                  <div className="field-error">{errors.hdlCholesterol}</div>
+                )}
                 <div className="metric-note optimal">
                   <span className="metric-status">Optimal:</span>
                   <span className="metric-value">&gt;60 mg/dL</span>
@@ -138,12 +189,16 @@ const HealthMetrics = () => {
                 </div>
                 <input
                   type="number"
-                  className="metric-input"
+                  className={`metric-input form-input ${errors.triglycerides ? "error" : ""}`}
                   placeholder="Enter value"
                   value={formData.lipidProfile.triglycerides}
                   onChange={(e) => handleLipidChange("triglycerides", e.target.value)}
+                  onBlur={() => validateField("triglycerides")}
                   min="0"
                 />
+                {touched.triglycerides && errors.triglycerides && (
+                  <div className="field-error">{errors.triglycerides}</div>
+                )}
                 <div className="metric-note normal">
                   <span className="metric-status">Normal:</span>
                   <span className="metric-value">&lt;150 mg/dL</span>
@@ -250,11 +305,13 @@ const HealthMetrics = () => {
         </form>
 
         <div className="step-indicator">
-          <div className="step">1</div>
-          <div className="step-line"></div>
-          <div className="step active">2</div>
-          <div className="step-line"></div>
-          <div className="step">3</div>
+          <div className="steps-container">
+            <div className="step">1</div>
+            <div className="step-line"></div>
+            <div className="step active">2</div>
+            <div className="step-line"></div>
+            <div className="step">3</div>
+          </div>
           <div className="step-labels">
             <span className="step-label">Patient Info</span>
             <span className="step-label active">Health Metrics</span>

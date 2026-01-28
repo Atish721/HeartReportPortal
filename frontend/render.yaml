@@ -1,0 +1,10 @@
+# render.yaml
+services:
+  - type: web
+    name: heart-buddy-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: FRONTEND_ORIGIN
+        value: https://heart-seven-ruddy.vercel.app

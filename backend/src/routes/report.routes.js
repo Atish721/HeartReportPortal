@@ -10,6 +10,9 @@ import { generatePDF } from "../utils/pdfGenerator.js";
 const router = express.Router();
 
 router.post("/generate", authMiddleware, async (req, res) => {
+  let ecgImagePath;
+  let pdfPath;
+
   try {
     const {
       patient,
@@ -19,8 +22,10 @@ router.post("/generate", authMiddleware, async (req, res) => {
       ecgImageBase64
     } = req.body;
 
-    const ecgImagePath = saveBase64Image(ecgImageBase64);
+    // 1️⃣ Save ECG image
+    ecgImagePath = saveBase64Image(ecgImageBase64);
 
+    // 2️⃣ Save report in DB
     const report = await PatientReport.create({
       patient,
       healthMetrics,
@@ -29,26 +34,45 @@ router.post("/generate", authMiddleware, async (req, res) => {
       ecgImagePath
     });
 
+    // 3️⃣ Generate PDF
     const html = generateReportHTML(report);
-    const pdfPath = generatePDF(html);
+    pdfPath = generatePDF(html);
 
     if (!fs.existsSync(pdfPath)) {
-      return res.status(500).json({ message: "PDF generation failed" });
+      throw new Error("PDF generation failed");
     }
 
+    // 4️⃣ Send PDF to client
     res.download(pdfPath, "Patient_ECG_Report.pdf");
 
-    // ✅ SAFE CLEANUP (after response ends)
+    // 5️⃣ CLEANUP AFTER RESPONSE
     res.on("finish", () => {
-      if (fs.existsSync(pdfPath)) {
-        fs.unlink(pdfPath, () => {});
+      // delete PDF
+      if (pdfPath && fs.existsSync(pdfPath)) {
+        fs.unlink(pdfPath, () => { });
+      }
+
+      // delete ECG image
+      if (ecgImagePath && fs.existsSync(ecgImagePath)) {
+        fs.unlink(ecgImagePath, () => { });
       }
     });
 
   } catch (err) {
     console.error("PDF ERROR:", err);
+
+    // cleanup if error happens
+    if (pdfPath && fs.existsSync(pdfPath)) {
+      fs.unlinkSync(pdfPath);
+    }
+
+    if (ecgImagePath && fs.existsSync(ecgImagePath)) {
+      fs.unlinkSync(ecgImagePath);
+    }
+
     res.status(500).json({ message: "PDF generation failed" });
   }
 });
+
 
 export default router;

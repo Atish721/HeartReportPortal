@@ -267,6 +267,12 @@
   border-top: 1px solid #e2e8f0;
 }
 
+.steps-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .step {
   width: 40px;
   height: 40px;
@@ -279,7 +285,9 @@
   background: #e2e8f0;
   color: #718096;
   position: relative;
+  z-index: 2;
 }
+
 
 .step.active {
   background: #4299e1;
@@ -290,13 +298,14 @@
   width: 100px;
   height: 2px;
   background: #e2e8f0;
-  margin: 0 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .step-labels {
   display: flex;
   justify-content: space-between;
-  width: 300px;
+  width: 340px; /* Increased to accommodate lines */
   margin-top: 10px;
 }
 
@@ -304,6 +313,8 @@
   font-size: 12px;
   color: #a0aec0;
   font-weight: 500;
+  text-align: center;
+  width: 100px; /* Match step-line width */
 }
 
 .step-label.active {
@@ -311,34 +322,47 @@
   font-weight: 600;
 }
 
-/* Step numbers and lines container */
-.step-indicator > div:first-child {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-  .patient-info-card {
-    padding: 30px 20px;
-    margin: 10px;
-  }
-  
-  .portal-title {
-    font-size: 24px;
-  }
-  
-  .page-title {
-    font-size: 20px;
-  }
-  
-  .form-actions {
-    flex-direction: column;
+  .step-line {
+    width: 60px;
   }
   
   .step-labels {
-    width: 100%;
-    justify-content: space-around;
+    width: 220px;
+  }
+  
+  .step-label {
+    width: 60px;
+    font-size: 11px;
   }
 }
+
+@media (max-width: 480px) {
+  .step-line {
+    width: 40px;
+  }
+  
+  .step-labels {
+    width: 160px;
+  }
+  
+  .step-label {
+    width: 40px;
+    font-size: 10px;
+  }
+}
+
+
+.field-error {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.form-input.error,
+.form-select.error {
+  border-color: #dc3545;
+}
+

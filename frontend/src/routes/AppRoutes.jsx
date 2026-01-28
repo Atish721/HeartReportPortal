@@ -4,6 +4,7 @@ import PatientInfo from "../pages/PatientInfo.jsx";
 import HealthMetrics from "../pages/HealthMetrics.jsx";
 import ECGUpload from "../pages/ECGUpload.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import ProtectedLayout from "../layouts/ProtectedLayout.jsx";
 
 const AppRoutes = () => (
   <Routes>
@@ -13,7 +14,9 @@ const AppRoutes = () => (
       path="/patient"
       element={
         <ProtectedRoute>
-          <PatientInfo />
+          <ProtectedLayout>
+            <PatientInfo />
+          </ProtectedLayout>
         </ProtectedRoute>
       }
     />
@@ -22,7 +25,9 @@ const AppRoutes = () => (
       path="/health"
       element={
         <ProtectedRoute>
-          <HealthMetrics />
+          <ProtectedLayout>
+            <HealthMetrics />
+          </ProtectedLayout>
         </ProtectedRoute>
       }
     />
@@ -31,7 +36,9 @@ const AppRoutes = () => (
       path="/ecg"
       element={
         <ProtectedRoute>
-          <ECGUpload />
+          <ProtectedLayout>
+            <ECGUpload />
+          </ProtectedLayout>
         </ProtectedRoute>
       }
     />

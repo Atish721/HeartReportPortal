@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: heart-buddy-api
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: "npm install"
+    startCommand: "node server.js" # replace with your entry point
+    envVars:
+      - key: REACT_APP_API_URL
+        value: "https://api-heart-bice.vercel.app/api"
+      - key: PORT
+        value: "10000" # optional, Render will assign PORT automatically if not set
+    autoDeploy: true
+    branch: master
